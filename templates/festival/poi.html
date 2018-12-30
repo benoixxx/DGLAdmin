@@ -1,0 +1,119 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Poi{% endblock %}
+
+{% block content %}
+
+    <form action="{% url 'edit_festival' id_festival %}">
+        <button>Go back</button>
+    </form>
+
+    <h1 class="text-center">{{ name_festival}}</h1>
+
+    <h2 class="text-center">POI ({{ pois|length }})</h2>
+
+    <p id="namePoiToDelete"></p>
+    <form hidden id="deletePOI" action="">
+        <button>Delete POI</button>
+    </form>
+
+    <div id= "map" class="map" style="width: 100%; height: 400px;"></div>
+
+    <article>
+        <div class="text-center">
+            <form action="{% url 'poi' id_festival %}" method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="text-center">
+                        {{ field.label_tag }}
+                    </div>
+                    <div class="text-center">
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <button type="submit" value="Submit">Add</button>
+            </form>
+        </div>
+    </article>
+
+    <h2 class="text-center">Stages ({{ stages|length }}) - Artists ({{ number_artists }})</h2>
+    {% for stage in stages %}
+
+        <h3 class="title">{{ stage.name }}</h3>
+
+        <form action="{% url 'add_artist' id_festival stage.id %}">
+            <button>Add artist</button>
+        </form>
+
+        <article class="article text-center">
+            {% for artist in stage.artist %}
+                <h3 class="title">{{ artist.name }}</h3>
+                <p>{{ artist.startDate }} - {{ artist.endDate }}</p>
+
+                <form action="{% url 'delete_artist' id_festival stage.id artist.id%}">
+                    <button>Delete</button>
+                </form>
+
+                {% if not forloop.last %}
+
+                {% endif %}
+
+                {% empty %}
+                    <p>There is no artist!</p>
+            {% endfor %}
+        </article>
+    {% endfor %}
+
+{% endblock %}
+
+{% block script %}
+    <script>
+      function initMap() {
+        let latlng = new google.maps.LatLng("{{ latitude_festival }}", "{{ longitude_festival }}");
+
+        let map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 14,
+          center: latlng
+        });
+
+        {% for poi in pois %}
+            latlng = new google.maps.LatLng("{{ poi.latitude }}", "{{ poi.longitude }}");
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                title: "{{ poi.category }} | {{ poi.name }}"
+            });
+            marker.addListener("dblclick", function (e) {
+                document.getElementById("deletePOI").hidden = false;
+                document.getElementById("namePoiToDelete").innerHTML = "{{ poi.category }} | {{ poi.name }}";
+                document.getElementById("deletePOI").action = "{% url 'delete_poi' id_festival poi.id %}";
+            }
+        );
+
+        {% endfor %}
+
+        let lastMarker;
+        map.addListener('click', function(e) {
+            if(lastMarker != null) {lastMarker.setMap(null);}
+            placeMarkerAndPanTo(e.latLng, map);
+        });
+
+        function placeMarkerAndPanTo(latLng, map) {
+            let newMarker = new google.maps.Marker({
+                position: latLng,
+                map: map
+            });
+            infowindow = new google.maps.InfoWindow({
+                content: " " + newMarker.getPosition()
+            });
+            newMarker.addListener('click', function() {
+                infowindow.open(map, newMarker);
+            });
+            newMarker.addListener('dblclick', function() {
+               newMarker.setMap(null);
+            });
+            lastMarker = newMarker;
+        }};
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ code }}&callback=initMap"></script>
+{% endblock %}

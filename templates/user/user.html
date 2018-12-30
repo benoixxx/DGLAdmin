@@ -1,0 +1,37 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Users{% endblock %}
+
+
+{% block content %}
+    <h1>Users ({{ users|length }})</h1>
+
+    <form action="{% url 'add_user' %}">
+        <button>Add a user</button>
+    </form>
+
+    {% for user in users %}
+        <article class="article text-center">
+            <h2 class="title">{{ user.firstName }} {{ user.lastName }}</h2>
+            <h3>MAIL</h3>
+            <p>{{ user.email }}</p>
+            <h3>PASSWORD</h3>
+            <p>{{ user.password }}</p>
+
+            <form action="{% url 'edit_user' user.id %}">
+                <button>Edit</button>
+            </form>
+            <form action="{% url 'delete_user' user.id%}">
+                <button>Delete</button>
+            </form>
+        </article>
+
+        {% empty %}
+            <p>There is no one!</p>
+    {% endfor %}
+
+    {% if error_request %}
+        <p class="text-center">Sorry! We have problems with the server...</p>
+    {% endif %}
+
+{% endblock %}

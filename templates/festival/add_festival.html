@@ -1,0 +1,28 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Festival{% endblock %}
+
+{% block content %}
+
+    <form action="{% url 'festival' %}">
+        <button>Go back</button>
+    </form>
+
+    <h1>Add a new festival</h1>
+
+    <article>
+        <form class="text-center" action="{% url 'add_festival' %}" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="text-center">
+                    {{ field.label_tag }}
+                </div>
+                <div class="text-center">
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <button type="submit" value="Submit">Add</button>
+        </form>
+    </article>
+
+{% endblock %}

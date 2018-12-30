@@ -1,0 +1,38 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Festival{% endblock %}
+
+{% block content %}
+    <h1>Festivals ({{ festivals|length }})</h1>
+
+    <form action="{% url 'add_festival' %}">
+        <button>Add a festival</button>
+    </form>
+
+    {% for festival in festivals %}
+        <article class="text-center">
+            <h2 class="title">{{ festival.name }}</h2>
+            <h3>DATE</h3>
+            <p>{{ festival.startDate }} - {{ festival.endDate }}</p>
+            <h3>PLACE</h3>
+            <p>{{ festival.street }} {{ festival.locality }}  {{ festival.city }}  -  {{ festival.region }}, {{ festival.country }}</p>
+            <h3>CONTACT</h3>
+            <p>{{ festival.email }}</p>
+
+            <form action="{% url 'edit_festival' festival.id %}">
+                <button>Edit</button>
+            </form>
+            <form action="{% url 'delete_festival' festival.id %}">
+                <button>Delete</button>
+            </form>
+        </article>
+
+        {% empty %}
+            <p>There is no festival!</p>
+    {% endfor %}
+
+    {% if error_request %}
+        <p class="text-center">Sorry! We have problems with the server...</p>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Festival{% endblock %}
+
+{% block content %}
+
+    <form action="{% url 'festival' %}">
+        <button>Go back</button>
+    </form>
+
+    <h1>Edit a festival</h1>
+
+
+    <article class="text-center">
+        <h2 class="title">{{ festival.name }}</h2>
+        <h3>DATE</h3>
+        <p>{{ festival.startDate }} - {{ festival.endDate }}</p>
+        <h3>PLACE</h3>
+        <p>{{ festival.street }} {{ festival.locality }}  -  {{ festival.region }}, {{ festival.country }}</p>
+        <h3>CONTACT</h3>
+        <p>{{ festival.email }}</p>
+
+        <form action="{% url 'poi' festival.id %}">
+                <button>POI and Artists</button>
+        </form>
+    </article>
+
+    <article class="text-center">
+        <form class="text-center" action="{% url 'edit_festival' festival.id %}" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="text-center">
+                    {{ field.label_tag }}
+                </div>
+                <div class="text-center">
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <button type="submit" value="Submit">Edit</button>
+        </form>
+    </article>
+
+{% endblock %}

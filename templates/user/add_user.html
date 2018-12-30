@@ -1,0 +1,28 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}User{% endblock %}
+
+{% block content %}
+
+    <form action="{% url 'user' %}">
+        <button>Go back</button>
+    </form>
+
+    <h1>Add a new user</h1>
+
+    <article>
+        <form class="text-center" action="{% url 'add_user' %}" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="text-center">
+                    {{ field.label_tag }}
+                </div>
+                <div class="text-center">
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <button type="submit" value="Submit">Add</button>
+        </form>
+    </article>
+
+{% endblock %}
