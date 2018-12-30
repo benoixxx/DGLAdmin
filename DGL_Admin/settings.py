@@ -25,7 +25,7 @@ SECRET_KEY = 'w%wtp(2rtko*_-hn&$hm_f(3^0&#(#l=d*j+iae=3vm1ybcmu-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'benoixxx.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'benoix.pythonanywhere.com']
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'requests',
+    'geopy',
 ]
 
 MIDDLEWARE = [
